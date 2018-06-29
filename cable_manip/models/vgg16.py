@@ -33,8 +33,8 @@ class VGG16(chainer.Chain):
             self.conv5_2 = L.Convolution2D(512, 512, 3, 1, 1)
             self.conv5_3 = L.Convolution2D(512, 512, 3, 1, 1)
 
-            self.fc6 = L.Linear(25088, 4096)
-            self.fc7 = L.Linear(4096, 4096)
+            # self.fc6 = L.Linear(25088, 4096)
+            # self.fc7 = L.Linear(4096, 4096)
             # self.fc8 = L.Linear(4096, n_class)
 
     def __call__(self, x, t=None):
@@ -62,20 +62,21 @@ class VGG16(chainer.Chain):
         h = F.relu(self.conv5_3(h))
         h = F.max_pooling_2d(h, 2, stride=2)
 
-        h = F.dropout(F.relu(self.fc6(h)), ratio=.5)
-        h = F.dropout(F.relu(self.fc7(h)), ratio=.5)
-        h = self.fc8(h)
-        fc8 = h
+        # h = F.dropout(F.relu(self.fc6(h)), ratio=.5)
+        # h = F.dropout(F.relu(self.fc7(h)), ratio=.5)
+        # h = self.fc8(h)
+        #fc8 = h
 
-        self.score = fc8
+        self.score = h
 
         if t is None:
             assert not chainer.config.train
             return
 
-        self.loss = F.softmax_cross_entropy(fc8, t)
-        self.accuracy = F.accuracy(self.score, t)
-        return self.loss
+        # self.loss = F.softmax_cross_entropy(fc8, t)
+        # self.accuracy = F.accuracy(self.score, t)
+        # return self.loss
+        return self.score
 
     @classmethod
     def download(cls):

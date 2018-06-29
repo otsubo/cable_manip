@@ -8,7 +8,7 @@ import chainer
 import numpy as np
 import skimage.io
 
-
+import vgg16
 
 
 def extraction():
@@ -24,5 +24,16 @@ def extraction():
         input = chainer.Variable(input)
         model(input)
 
+def extraction_tmp():
+    #input
+    img = skimage.io.imread('image.png')
+    #input = input[np.newaxis, :, :, :]
+
+    model = vgg16.VGG16()
+    #forward
+    with chainer.no_backprop_mode():
+        input_data = chainer.Variable(img)
+        model(input_data)
+
 if __name__ == '__main__':
-    extraction()
+    extraction_tmp()
