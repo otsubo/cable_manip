@@ -10,6 +10,7 @@ import skimage.io
 
 import vgg16
 
+import chainer.serializers
 
 def extraction():
     #input
@@ -24,16 +25,27 @@ def extraction():
         input = chainer.Variable(input)
         model(input)
 
+
 def extraction_tmp():
     #input
+    mean_bgr = np.array((104.00698793, 116.66876762, 122.67891434))
+
     img = skimage.io.imread('image.png')
-    #input = input[np.newaxis, :, :, :]
+    img = img.astype(np.float32)
+    img -= mean_bgr
+    img = img.transpose((2, 0, 1))
+    img = img[np.newaxis, :, :, :]
 
     model = vgg16.VGG16()
+    #chainer.serializers.load_npz(vgg16.pretrained_model, model)
+
     #forward
     with chainer.no_backprop_mode():
         input_data = chainer.Variable(img)
-        model(input_data)
+        with chainer.using_config('train', False):
+            feature = model(input_data)
+    return feature
+
 
 if __name__ == '__main__':
     extraction_tmp()
